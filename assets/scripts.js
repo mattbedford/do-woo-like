@@ -7,10 +7,18 @@ document.addEventListener('DOMContentLoaded', function() {
 			event.preventDefault();
 			let ref = event.target.closest('.likes-wrapper');
 			let ProdId = ref.dataset.productId;
-            switchLikeStatus(ref);
+			switchLikeStatus(ref);
 			doLike(ProdId, ref);
 		});
 	});
+	
+	function switchLikeStatus(ref) {
+        if(ref.classList.contains('liked')) {
+            ref.classList.remove('liked');
+        } else {
+            ref.classList.add('liked');
+        }
+    }
 
     function switchLikeStatus(ref) {
         if(ref.classList.contains('liked')) {
@@ -32,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'X-WP-Nonce': doWooLike.security
             }
         })
+        .then(response => response.json())
         .catch((error) => {
             console.error('Error:', error);
         });
