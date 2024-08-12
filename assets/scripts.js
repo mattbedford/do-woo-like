@@ -33,12 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .then(response => response.json())
-        .then(data => {
-			if(data.status === true) {
-				ref.classList.add('liked');
-			}
-            console.log(data);
-        })
         .catch((error) => {
             console.error('Error:', error);
         });
