@@ -12,20 +12,17 @@
 
 namespace DoWooLike;
 
-include_once 'includes.php';
-include_once 'rest.php';
-include_once 'cookie-to-meta-on-login.php';
 
 class initDoWooLike
 {
-    public function __construct()
+    public function Like()
     {
+      
+      	include_once 'includes.php';
+        include_once 'rest.php';
+        include_once 'cookie.php';
 
         if (!class_exists('WooCommerce')) {
-            return;
-        }
-
-        if (is_admin()) {
             return;
         }
 
@@ -38,7 +35,7 @@ class initDoWooLike
         }
 
         add_action('wp_enqueue_scripts', [Includes::class, 'enqueueScripts']);
-        add_action('woocommerce_before_shop_loop_item', [Includes::class, 'HeartHtml'], 60);
+        add_action('woocommerce_before_shop_loop_item', [Includes::class, 'heartHtml'], 60);
     }
 }
-add_action('init', new initDoWooLike());
+add_action('init', [new initDoWooLike(), 'Like']);

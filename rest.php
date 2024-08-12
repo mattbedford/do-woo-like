@@ -11,7 +11,9 @@ class rest
         register_rest_route('dwl/v1', '/like-logged-in/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [self::class, 'loggedInLikeProduct'],
-            'permission_callback' => is_user_logged_in(),
+            'permission_callback' => function() {
+            	return is_user_logged_in();
+        	}
         ]);
     }
 
