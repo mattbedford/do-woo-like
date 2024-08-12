@@ -20,8 +20,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function switchLikeStatus(ref) {
+        if(ref.classList.contains('liked')) {
+            ref.classList.remove('liked');
+        } else {
+            ref.classList.add('liked');
+        }
+    }
+
     function doLike(ProdId, ref) {
-        let url = `/wp-json/dwl/v1/like/${ProdId}`;
+        let url = doWooLike.url + ProdId;
         let data = {
             'product_id': ProdId
         };
