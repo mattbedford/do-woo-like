@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function doLike(ProdId, ref) {
-        let url = `/wp-json/dwl/v1/like/${ProdId}`;
+        let url = doWooLike.url + ProdId;
         let data = {
             'product_id': ProdId
         };

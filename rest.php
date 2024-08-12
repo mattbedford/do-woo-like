@@ -7,22 +7,15 @@ class rest
 {
     public function __construct()
     {
-        add_action('init', [self::class, 'registerRoutes']);
-    }
-
-
-    public static function registerRoutes()
-    {
-        if(!is_user_logged_in()) {
-            add_action('rest_api_init', [self::class, 'registerLoggedOutRoute']);
-        }
+      
+        add_action('rest_api_init', [self::class, 'registerLoggedOutRoute']);
         add_action('rest_api_init', [self::class, 'registerLoggedInRoute']);
     }
 
 
     public static function registerLoggedInRoute()
     {
-        register_rest_route('dwl/v1', '/like/(?P<id>\d+)', [
+        register_rest_route('dwl/v1', '/like-logged-in/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [self::class, 'loggedInLikeProduct'],
             'permission_callback' => is_user_logged_in(),
@@ -32,10 +25,10 @@ class rest
 
     public static function registerLoggedOutRoute()
     {
-        register_rest_route('dwl/v1', '/like/(?P<id>\d+)', [
+        register_rest_route('dwl/v1', '/like-logged-out/(?P<id>\d+)', [
             'methods' => 'GET',
-            'permission_callback' => '__return_true',
             'callback' => [self::class, 'loggedOutLikeProduct'],
+            'permission_callback' => '__return_true',
         ]);
     }
 

@@ -13,7 +13,11 @@ class includes
     {
 
 		add_action('init', [self::class, 'checkUser'], 10);
-        add_action('init', [self::class, 'createCookie'], 20);
+        
+        if(self::$user_id === 0) {
+            add_action('init', [self::class, 'createCookie'], 40);
+        }
+        
     
         add_action('wp_enqueue_scripts', [self::class, 'enqueueScripts']);  
       	add_action('woocommerce_before_shop_loop_item', [self::class, 'HeartHtml'], 60 );
@@ -55,7 +59,7 @@ class includes
 	
     public static function logged_in($product_id)
     {
-        if (!\is_user_logged_in()) {
+        if (!is_user_logged_in()) {
             return false;
         }
 		
@@ -68,7 +72,7 @@ class includes
 
     public static function logged_out($product_id)
     {
-        if (\is_user_logged_in()) {
+        if (is_user_logged_in()) {
             return false;
         }
 
@@ -86,15 +90,21 @@ class includes
     {
         wp_enqueue_style('do-woo-like-styles', plugin_dir_url(__FILE__) . '/assets/style.css');
       	wp_enqueue_script('do-woo-like-js', plugin_dir_url(__FILE__) . '/assets/scripts.js', [], '1.0.0', true);
-        wp_localize_script('do-woo-like-js', 'doWooLike', [
+        $rest_args = [
             'security' => wp_create_nonce('wp_rest'),
-        ]);
+        ];
+        $rest_args['url'] = rest_url('dwl/v1/like-logged-out/');
+        if(self::$user_id !== 0) {
+            $rest_args['url'] = rest_url('dwl/v1/like-logged-in/');
+        }
+        
+        wp_localize_script('do-woo-like-js', 'doWooLike', $rest_args);
     }
 
 
     public static function createCookie()
     {
-        if (\is_user_logged_in()) {
+        if (is_user_logged_in()) {
             return;
         }
         if (!isset($_COOKIE['liked_products'])) {
