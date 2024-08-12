@@ -7,11 +7,18 @@ class rest
 {
     public function __construct()
     {
+        add_action('init', [self::class, 'registerRoutes']);
+    }
+
+
+    public static function registerRoutes()
+    {
         if(!is_user_logged_in()) {
             add_action('rest_api_init', [self::class, 'registerLoggedOutRoute']);
         }
         add_action('rest_api_init', [self::class, 'registerLoggedInRoute']);
     }
+
 
     public static function registerLoggedInRoute()
     {

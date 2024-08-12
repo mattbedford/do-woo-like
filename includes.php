@@ -12,9 +12,8 @@ class includes
     public function __construct()
     {
 
-        self::checkUser();
-
-        add_action('init', [self::class, 'createCookie']);
+		add_action('init', [self::class, 'checkUser'], 10);
+        add_action('init', [self::class, 'createCookie'], 20);
     
         add_action('wp_enqueue_scripts', [self::class, 'enqueueScripts']);  
       	add_action('woocommerce_before_shop_loop_item', [self::class, 'HeartHtml'], 60 );
@@ -56,7 +55,7 @@ class includes
 	
     public static function logged_in($product_id)
     {
-        if (!is_user_logged_in()) {
+        if (!\is_user_logged_in()) {
             return false;
         }
 		
@@ -69,7 +68,7 @@ class includes
 
     public static function logged_out($product_id)
     {
-        if (is_user_logged_in()) {
+        if (\is_user_logged_in()) {
             return false;
         }
 
@@ -95,7 +94,7 @@ class includes
 
     public static function createCookie()
     {
-        if (is_user_logged_in()) {
+        if (\is_user_logged_in()) {
             return;
         }
         if (!isset($_COOKIE['liked_products'])) {
