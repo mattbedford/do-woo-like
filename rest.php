@@ -5,15 +5,8 @@ namespace DoWooLike;
 
 class rest
 {
-    public function __construct()
-    {
-      
-        add_action('rest_api_init', [self::class, 'registerLoggedOutRoute']);
-        add_action('rest_api_init', [self::class, 'registerLoggedInRoute']);
-    }
-
-
-    public static function registerLoggedInRoute()
+    
+    public function registerLoggedInRoute()
     {
         register_rest_route('dwl/v1', '/like-logged-in/(?P<id>\d+)', [
             'methods' => 'GET',
@@ -23,7 +16,7 @@ class rest
     }
 
 
-    public static function registerLoggedOutRoute()
+    public function registerLoggedOutRoute()
     {
         register_rest_route('dwl/v1', '/like-logged-out/(?P<id>\d+)', [
             'methods' => 'GET',
@@ -32,6 +25,8 @@ class rest
         ]);
     }
 
+    
+    // Methods used when user is logged in. Here we update user meta.
     public static function loggedInLikeProduct($data)
     {
         $product_id = $data['id'];
