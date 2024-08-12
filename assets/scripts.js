@@ -7,9 +7,18 @@ document.addEventListener('DOMContentLoaded', function() {
 			event.preventDefault();
 			let ref = event.target.closest('.likes-wrapper');
 			let ProdId = ref.dataset.productId;
+            switchLikeStatus(ref);
 			doLike(ProdId, ref);
 		});
 	});
+
+    function switchLikeStatus(ref) {
+        if(ref.classList.contains('liked')) {
+            ref.classList.remove('liked');
+        } else {
+            ref.classList.add('liked');
+        }
+    }
 
     function doLike(ProdId, ref) {
         let url = `/wp-json/dwl/v1/like/${ProdId}`;
@@ -22,13 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json',
                 'X-WP-Nonce': doWooLike.security
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-			if(data.status === true) {
-				ref.classList.add('liked');
-			}
-            console.log(data);
         })
         .catch((error) => {
             console.error('Error:', error);

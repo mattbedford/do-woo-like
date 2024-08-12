@@ -13,5 +13,7 @@ namespace DoWooLike;
 
 include_once 'includes.php';
 include_once 'rest.php';
+include_once 'cookie-to-meta-on-login.php';
 new includes();
+new CookieToMetaOnLogin();
 new rest();

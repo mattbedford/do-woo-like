@@ -5,20 +5,42 @@ namespace DoWooLike;
 
 class includes
 {
+
+    public static string $logged_status = "logged_out";
+    public static int $user_id = 0;
+
     public function __construct()
     {
-            add_action('wp_enqueue_scripts', [self::class, 'enqueueScripts']);  
-      		add_action('woocommerce_before_shop_loop_item', [self::class, 'HeartHtml'], 60 );
+
+        self::checkUser();
+
+        add_action('init', [self::class, 'createCookie']);
+    
+        add_action('wp_enqueue_scripts', [self::class, 'enqueueScripts']);  
+      	add_action('woocommerce_before_shop_loop_item', [self::class, 'HeartHtml'], 60 );
       
     }
 
+    // Either set user ID and "logged in" else create a cookie and set "logged out".
+    // Logged in or out is a polymorphic method to evaluate the liked status of our displayed products.
+    public static function checkUser()
+    {
+        $id = get_current_user_id();
+        if (0 !== $id) {
+            self::$logged_status = "logged_in";
+            self::$user_id = $id;
+        } else {
+            self::createCookie();
+        }
+    }
 
     public static function HeartHtml()
     {
 		
         $product_id = get_the_ID();
-		
-		if(self::CheckIfUserLiked($product_id)) {
+		$action = self::$logged_status;
+
+		if(self::$action($product_id)) {
 			echo '<div class="likes-wrapper liked"	data-product-id="' . $product_id . '">';
 		} else {
 			echo '<div class="likes-wrapper" data-product-id="' . $product_id . '">';
@@ -32,19 +54,35 @@ class includes
     }
 	
 	
-    public static function CheckIfUserLiked($product_id)
+    public static function logged_in($product_id)
     {
-
-        $user_id = get_current_user_id();
-		if(0 === $user_id || empty($user_id)) return false;
+        if (!is_user_logged_in()) {
+            return false;
+        }
 		
-        $liked_products = get_user_meta($user_id, 'liked_products', true);
+        $liked_products = get_user_meta(self::$user_id, 'liked_products', true);
         $liked_products = empty($liked_products) ? [] : $liked_products;
 
         if (!in_array($product_id, $liked_products)) return true;
         return false;
     }
+
+    public static function logged_out($product_id)
+    {
+        if (is_user_logged_in()) {
+            return false;
+        }
+
+        $liked_products = json_decode($_COOKIE['dwl_liked_products']);
+        $liked_products = empty($liked_products) ? [] : $liked_products;
+        
+        if (!in_array($product_id, $liked_products)) {
+            return true;
+        }
+        return false;
+    }
   
+
     public static function enqueueScripts()
     {
         wp_enqueue_style('do-woo-like-styles', plugin_dir_url(__FILE__) . '/assets/style.css');
@@ -53,5 +91,17 @@ class includes
             'security' => wp_create_nonce('wp_rest'),
         ]);
     }
+
+
+    public static function createCookie()
+    {
+        if (is_user_logged_in()) {
+            return;
+        }
+        if (!isset($_COOKIE['liked_products'])) {
+            setcookie('dwl_liked_products', json_encode([]), time() + 3600, COOKIEPATH, COOKIE_DOMAIN);
+        }
+    }
+
 
 }
