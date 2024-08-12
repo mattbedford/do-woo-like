@@ -10,7 +10,7 @@ class Cookie
     public static function createCookie()
     {
 
-        if (!isset($_COOKIE['liked_products'])) {
+        if (!isset($_COOKIE['dwl_liked_products'])) {
             setcookie('dwl_liked_products', json_encode([]), time() + 3600, COOKIEPATH, COOKIE_DOMAIN);
         }
     }

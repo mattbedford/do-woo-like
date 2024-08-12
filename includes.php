@@ -44,6 +44,7 @@ class Includes
     private static function logged_out($product_id)
     {
 
+        if (!isset($_COOKIE['dwl_liked_products'])) return false;
         $liked_products = json_decode($_COOKIE['dwl_liked_products']);
         $liked_products = empty($liked_products) ? [] : $liked_products;
         
