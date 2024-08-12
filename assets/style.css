@@ -1,0 +1,11 @@
+.heart-icon svg {
+    width: 40px;
+    height: 40px;
+    color:var(--pure-white);
+    stroke-width:50px;
+    stroke:var(--mid-blue) !important;
+}
+
+.likes-wrapper.liked .heart-icon svg {
+    color:var(--mid-blue);
+}

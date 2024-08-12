@@ -12,8 +12,8 @@ class rest
 
     public static function registerRoute()
     {
-        register_rest_route('do-woo-like/v1', '/like/(?P<id>\d+)', [
-            'methods' => 'POST',
+        register_rest_route('dwl/v1', '/like/(?P<id>\d+)', [
+            'methods' => 'GET',
             'callback' => [self::class, 'likeProduct'],
             'permission_callback' => '__return_true',
         ]);
@@ -25,8 +25,8 @@ class rest
         $likes = get_post_meta($product_id, 'likes', true);
         $likes = empty($likes) ? 1 : $likes + 1;
         update_post_meta($product_id, 'likes', $likes);
-        return $likes;
-        self::LikeForLoggedInUser($product_id);
+		self::LikeForLoggedInUser($product_id);
+        return ["status" => true];
     }
 
 
@@ -38,7 +38,11 @@ class rest
         $user_id = get_current_user_id();
         $liked_products = get_user_meta($user_id, 'liked_products', true);
         $liked_products = empty($liked_products) ? [] : $liked_products;
-        $liked_products[] = $product_id;
+		if(!in_array($product_id, $liked_products))  {
+			$liked_products[] = $product_id;
+		} else {
+			$liked_products = array_diff($liked_products, [$product_id]);
+		}
         update_user_meta($user_id, 'liked_products', $liked_products);
     }
 }

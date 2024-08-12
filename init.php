@@ -12,4 +12,6 @@
 namespace DoWooLike;
 
 include_once 'includes.php';
+include_once 'rest.php';
 new includes();
+new rest();

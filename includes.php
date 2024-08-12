@@ -7,21 +7,51 @@ class includes
 {
     public function __construct()
     {
-        add_action('woocommerce_before_shop_loop_item', [self::class, 'HeartHtml'], 60 );
+            add_action('wp_enqueue_scripts', [self::class, 'enqueueScripts']);  
+      		add_action('woocommerce_before_shop_loop_item', [self::class, 'HeartHtml'], 60 );
+      
     }
 
 
     public static function HeartHtml()
     {
+		
         $product_id = get_the_ID();
-        echo '<div class="likes-wrapper" data-product-id=' . $product_id . '>';
+		
+		if(self::CheckIfUserLiked($product_id)) {
+			echo '<div class="likes-wrapper liked"	data-product-id="' . $product_id . '">';
+		} else {
+			echo '<div class="likes-wrapper" data-product-id="' . $product_id . '">';
+		}
+		
         echo '<div class="heart-icon">';
-        echo '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 30 28">
-            <path fill="#0093D3" fill-rule="evenodd" d="M21.32 0A8.64 8.64 0 0 0 15 2.74 8.64 8.64 0 0 0 8.68 0a8.7 8.7 0 0 0-6.26 14.75v.01L13.7 26.14l.81.82a.69.69 0 0 0 .98 0l.81-.82 11.05-11.16A8.7 8.7 0 0 0 21.32 0Zm-.24 2.53a6.15 6.15 0 0 0-5.44 3.8.69.69 0 0 1-1.27 0A6.16 6.16 0 0 0 2.52 8.72 6.2 6.2 0 0 0 4.24 13L15 23.87a846884.75 846884.75 0 0 1 10.58-10.68 6.2 6.2 0 0 0-4.26-10.67h-.24Z" clip-rule="evenodd"/>
-            </svg>';
+        echo '<svg aria-hidden="true" role="img" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" viewBox="-40 0 600 600"><path fill="currentColor" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"></path></svg>';
         echo '</div>';
         echo '</div>';
 
+    }
+	
+	
+    public static function CheckIfUserLiked($product_id)
+    {
+
+        $user_id = get_current_user_id();
+		if(0 === $user_id || empty($user_id)) return false;
+		
+        $liked_products = get_user_meta($user_id, 'liked_products', true);
+        $liked_products = empty($liked_products) ? [] : $liked_products;
+
+        if (!in_array($product_id, $liked_products)) return true;
+        return false;
+    }
+  
+    public static function enqueueScripts()
+    {
+        wp_enqueue_style('do-woo-like-styles', plugin_dir_url(__FILE__) . '/assets/style.css');
+      	wp_enqueue_script('do-woo-like-js', plugin_dir_url(__FILE__) . '/assets/scripts.js', [], '1.0.0', true);
+        wp_localize_script('do-woo-like-js', 'doWooLike', [
+            'security' => wp_create_nonce('wp_rest'),
+        ]);
     }
 
 }
