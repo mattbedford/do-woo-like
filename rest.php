@@ -61,25 +61,27 @@ class rest
     // Methods used when user is NOT logged in. Here we update cookies.
     public static function loggedOutLikeProduct($data)
     {
-        $product_id = $data['id'];
+        $product_id = absint($data['id']);
         $likes = get_post_meta($product_id, 'likes', true);
         $likes = empty($likes) ? 1 : $likes + 1;
         update_post_meta($product_id, 'likes', $likes);
-        self::cookieUpdate($product_id);
-        return ["status" => true];
+        $res = self::cookieUpdate($product_id);
+        return ["status" => true,
+        "liked_products" => $res
+        ];
     }
 
 
     public static function cookieUpdate($product_id)
     {
-        
-        $liked_products = json_decode($_COOKIE['dwl_liked_products']);
+        $liked_products = json_decode($_COOKIE['dwl_liked_products'], true);
         $liked_products = empty($liked_products) ? [] : $liked_products;
+
         if (!in_array($product_id, $liked_products)) {
             $liked_products[] = $product_id;
         } else {
-            $liked_products = array_diff($liked_products, [$product_id]);
+            $liked_products = array_values(array_diff($liked_products, [$product_id]));
         }
-        setcookie('dwl_liked_products', json_encode($liked_products), time() + 3600, COOKIEPATH, COOKIE_DOMAIN);
+        setcookie('dwl_liked_products', json_encode($liked_products), time() + (86400 * 30), "/");
     }
 }

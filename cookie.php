@@ -11,16 +11,19 @@ class Cookie
     {
 
         if (!isset($_COOKIE['dwl_liked_products'])) {
-            setcookie('dwl_liked_products', json_encode([]), time() + 3600, COOKIEPATH, COOKIE_DOMAIN);
+            setcookie('dwl_liked_products', json_encode([]), time() + (86400 * 30), "/");
         }
     }
 
 
     public static function cookieToMeta()
     {
+        if(!is_user_logged_in()) return;
+
         if (!isset($_COOKIE['dwl_liked_products'])) {
             return;
         }
+        
         $liked_products = json_decode($_COOKIE['dwl_liked_products']);
         $user_id = get_current_user_id();
         $user_liked_products = get_user_meta($user_id, 'liked_products', true);
@@ -32,6 +35,6 @@ class Cookie
             }
         }
         update_user_meta($user_id, 'liked_products', $user_liked_products);
-        setcookie('dwl_liked_products', json_encode([]), time() - 3600, COOKIEPATH, COOKIE_DOMAIN);
+        setcookie('dwl_liked_products', json_encode([]), time() + (86400 * 30), "/");
     }
 }
