@@ -43,12 +43,11 @@ class Includes
 
     private static function logged_out($product_id)
     {
-
-        if (!isset($_COOKIE['dwl_liked_products'])) return false;
+		if (!isset($_COOKIE['dwl_liked_products'])) return false;
         $liked_products = json_decode($_COOKIE['dwl_liked_products']);
         $liked_products = empty($liked_products) ? [] : $liked_products;
         
-        if (in_array(strval($product_id), $liked_products)) {
+        if (in_array(absint($product_id), $liked_products)) {
             return true;
         }
         return false;
@@ -73,6 +72,6 @@ class Includes
       	wp_enqueue_script('do-woo-like-rest');
     }
 
-
-
 }
+
+

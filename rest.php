@@ -83,5 +83,7 @@ class rest
             $liked_products = array_values(array_diff($liked_products, [$product_id]));
         }
         setcookie('dwl_liked_products', json_encode($liked_products), time() + (86400 * 30), "/");
+
+        return $liked_products;
     }
 }
