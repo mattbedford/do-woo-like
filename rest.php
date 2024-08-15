@@ -74,6 +74,9 @@ class rest
 
     public static function cookieUpdate($product_id)
     {
+        if (!isset($_COOKIE['dwl_liked_products']) || empty($_COOKIE['dwl_liked_products'])) {
+            setcookie('dwl_liked_products', json_encode([]), time() + (86400 * 30), "/");
+        }
         $liked_products = json_decode($_COOKIE['dwl_liked_products'], true);
         $liked_products = empty($liked_products) ? [] : $liked_products;
 

@@ -3,6 +3,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	var likeButtons = document.querySelectorAll('.likes-wrapper');
 
 	likeButtons.forEach(function(button) {
+
+        if (typeof likedProducts !== 'undefined' && likedProducts.length > 0) {
+            currId = button.dataset.productId;
+            if (likedProducts.includes(Number(currId))) {
+                button.classList.add('liked');
+            }
+        } 
+
 		button.addEventListener("click", function(event) {
 			event.preventDefault();
 			let ref = event.target.closest('.likes-wrapper');
@@ -13,14 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 	
 	function switchLikeStatus(ref) {
-        if(ref.classList.contains('liked')) {
-            ref.classList.remove('liked');
-        } else {
-            ref.classList.add('liked');
-        }
-    }
-
-    function switchLikeStatus(ref) {
         if(ref.classList.contains('liked')) {
             ref.classList.remove('liked');
         } else {

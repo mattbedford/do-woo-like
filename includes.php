@@ -11,6 +11,7 @@ class Includes
     {
 		
         $product_id = get_the_ID();
+        if(empty($product_id)) return;
         $class = self::productIsLiked($product_id);
 
 		echo '<div class="likes-wrapper' . $class . '" data-product-id="' . $product_id . '">';
@@ -24,33 +25,14 @@ class Includes
 
     public static function productIsLiked($product_id) 
     {
-        if (is_user_logged_in()) {
-            return self::logged_in($product_id) ? ' liked' : '';
-        }
-        return self::logged_out($product_id) ? ' liked' : '';
-    }
-
-	
-    private static function logged_in($product_id)
-    {
+        if (!is_user_logged_in()) return '';
 
         $liked_products = get_user_meta( get_current_user_id() , 'liked_products', true);
         $liked_products = empty($liked_products) ? [] : $liked_products;
 
-        if (!in_array($product_id, $liked_products)) return true;
-        return false;
-    }
+        if (!in_array($product_id, $liked_products)) return ' liked';
+        return '';
 
-    private static function logged_out($product_id)
-    {
-		if (!isset($_COOKIE['dwl_liked_products'])) return false;
-        $liked_products = json_decode($_COOKIE['dwl_liked_products']);
-        $liked_products = empty($liked_products) ? [] : $liked_products;
-        
-        if (in_array(absint($product_id), $liked_products)) {
-            return true;
-        }
-        return false;
     }
   
 
