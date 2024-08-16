@@ -28,7 +28,6 @@ class initDoWooLike
 
         if (!is_user_logged_in()) {
             add_action('init', [Cookie::class, 'createCookie']);
-            add_action('wp_footer', [Cookie::class, 'checkCookie'], 5);
             add_action('rest_api_init', [new rest(), 'registerLoggedOutRoute']);
             add_action('wp_login', [Cookie::class, 'cookieToMeta']);
         } else {

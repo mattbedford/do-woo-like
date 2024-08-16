@@ -46,8 +46,10 @@ class Includes
             'security' => wp_create_nonce('wp_rest'),
         ];
         $rest_args['url'] = rest_url('dwl/v1/like-logged-out/');
+        $rest_args['user_status'] = "logged-out";
         if(is_user_logged_in()) {
             $rest_args['url'] = rest_url('dwl/v1/like-logged-in/');
+            $rest_args['user_status'] = "logged-in";
         }
         
         wp_localize_script('do-woo-like-rest', 'doWooLike', $rest_args);

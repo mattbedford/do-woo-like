@@ -1,17 +1,23 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+
+    var likedProducts = null;
+    if (doWooLike.user_status === 'logged-out') {
+        likedProducts = getCookieObject();
+    }
+    
+    if(likedProducts) {
+        likedProducts.forEach(function(likedProduct) {
+            var likeButton = document.querySelector('.likes-wrapper[data-product-id="' + likedProduct + '"]');
+            likeButton.classList.add('liked');
+        });
+    }
+
 	var likeButtons = document.querySelectorAll('.likes-wrapper');
 
 	likeButtons.forEach(function(button) {
 
-        if (typeof likedProducts !== 'undefined' && likedProducts.length > 0) {
-            currId = button.dataset.productId;
-            if (likedProducts.includes(Number(currId))) {
-                button.classList.add('liked');
-            }
-        } 
-
-		button.addEventListener("click", function(event) {
+        button.addEventListener("click", function(event) {
 			event.preventDefault();
 			let ref = event.target.closest('.likes-wrapper');
 			let ProdId = ref.dataset.productId;
@@ -47,3 +53,14 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 
+function getCookieObject() {
+    var cookies = document.cookie.split(';');
+    var likedProducts = cookies.find(function(cookie) {
+        return cookie.includes('dwl_liked_products');
+    });
+	if (!likedProducts) {
+        return [];
+    }
+    var likedProductsArray = likedProducts.split('=')[1];
+    return JSON.parse(decodeURIComponent(likedProductsArray));
+}

@@ -15,17 +15,6 @@ class Cookie
         }
     }
 
-
-    public static function checkCookie() 
-    {
-		if (!isset($_COOKIE['dwl_liked_products'])) {
-            echo "<script>let likedProducts = JSON.parse('".json_encode([])."');</script>";
-			return;
-        }
-        $liked_products = json_decode($_COOKIE['dwl_liked_products']);
-		echo "<script>let likedProducts = JSON.parse('".json_encode($liked_products)."');</script>";
-    }
-
 	
     public static function cookieToMeta()
     {
