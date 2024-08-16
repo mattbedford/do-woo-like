@@ -76,9 +76,12 @@ class rest
     {
         if (!isset($_COOKIE['dwl_liked_products']) || empty($_COOKIE['dwl_liked_products'])) {
             setcookie('dwl_liked_products', json_encode([]), time() + (86400 * 30), "/");
+          	$liked_products = [];
+        } else {
+        	$liked_products = json_decode($_COOKIE['dwl_liked_products'], true);
         }
-        $liked_products = json_decode($_COOKIE['dwl_liked_products'], true);
-        $liked_products = empty($liked_products) ? [] : $liked_products;
+        
+      	$liked_products = empty($liked_products) ? [] : $liked_products;
 
         if (!in_array($product_id, $liked_products)) {
             $liked_products[] = $product_id;

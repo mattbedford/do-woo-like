@@ -29,13 +29,13 @@ class initDoWooLike
         if (!is_user_logged_in()) {
             add_action('init', [Cookie::class, 'createCookie']);
             add_action('rest_api_init', [new rest(), 'registerLoggedOutRoute']);
-            add_action('wp_login', [Cookie::class, 'cookieToMeta']);
         } else {
             add_action('rest_api_init', [new rest(), 'registerLoggedInRoute']);
         }
-
+		add_action('wp_login', [Cookie::class, 'cookieToMeta'], 10, 2);
         add_action('wp_enqueue_scripts', [Includes::class, 'enqueueScripts']);
         add_action('woocommerce_before_shop_loop_item', [Includes::class, 'heartHtml'], 80);
     }
 }
 add_action('init', [new initDoWooLike(), 'Like']);
+

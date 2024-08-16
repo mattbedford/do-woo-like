@@ -30,7 +30,7 @@ class Includes
         $liked_products = get_user_meta( get_current_user_id() , 'liked_products', true);
         $liked_products = empty($liked_products) ? [] : $liked_products;
 
-        if (!in_array($product_id, $liked_products)) return ' liked';
+        if (in_array($product_id, $liked_products)) return ' liked';
         return '';
 
     }
